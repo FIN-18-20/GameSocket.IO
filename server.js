@@ -50,7 +50,19 @@ io.on('connection', function(socket) {
       player.y += 5;
     }
   });
+
+	socket.on('disconnect', function(data) {
+		console.log('Got disconnect!');
+		console.log(players);
+		delete players[socket.id];
+		console.log(players);
+	});
+
+
+
 });
+
+
 
 setInterval(function() {
   io.sockets.emit('state', players);
