@@ -1,21 +1,13 @@
 {
-  "name": "how-to-make-a-multiplayer-game",
+  "name": "Test socket",
   "version": "1.0.0",
-  "description": "A tutorial for creating multiplayer browser games",
+  "description": "Test socket with a little gme",
   "main": "server.js",
   "scripts": {
     "test": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/omgimanerd/how-to-make-a-multiplayer-game.git"
-  },
-  "author": "Alvin Lin (omgimanerd)",
-  "license": "WTFPL",
-  "bugs": {
-    "url": "https://github.com/omgimanerd/how-to-make-a-multiplayer-game/issues"
-  },
-  "homepage": "https://github.com/omgimanerd/how-to-make-a-multiplayer-game#readme",
+  "author": "Valentin Kaelin",
+  "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
     "socket.io": "^1.7.4"
