@@ -8,17 +8,24 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 
-app.set('port', 5000);
+//app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
+
+// Heroku
+app.set('port', (process.env.PORT || 5000))
+
+app.listen(app.get('port'), function() {
+	console.log(`Bot en fonction sur le port ${app.get('port')}`);
+})
 
 // Routing
 app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'index.html'));
 });
 
-server.listen(5000, function() {
+/*server.listen(5000, function() {
   console.log('Starting server on port 5000');
-});
+});*/
 
 var players = {};
 io.on('connection', function(socket) {
