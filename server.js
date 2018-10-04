@@ -23,7 +23,7 @@ app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'index.html'));
 });
 
-server.listen(5000, function() {
+server.listen(app.get('port'), function() {
   console.log('Starting server on port 5000');
 });
 
