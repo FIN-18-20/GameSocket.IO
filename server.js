@@ -27,13 +27,21 @@ server.listen(app.get('port'), function() {
 	console.log('Starting server on port 5000');
 });
 
+var canvasBound = {
+	min_x : 0,
+	max_x : 800,
+	min_y : 0,
+	max_y : 800
+};
+
 var players = {};
 io.on('connection', function(socket) {
 
 	socket.on('new player', function() {
 		players[socket.id] = {
 			x: 300,
-			y: 300
+			y: 300,
+			color: getRandomColor()
 		};
 	});
 
@@ -50,6 +58,19 @@ io.on('connection', function(socket) {
 		}
 		if (data.down) {
 			player.y += 5;
+		}
+
+		if (player.x <= canvasBound.min_x - 10){
+			player.x = canvasBound.max_x
+		}
+		if (player.x >= canvasBound.max_x + 10){
+			player.x = canvasBound.min_x
+		}
+		if (player.y <= canvasBound.min_y - 10){
+			player.y = canvasBound.max_y;
+		}
+		if (player.y >= canvasBound.max_y + 10){
+			player.y = canvasBound.min_y;
 		}
 	});
 
@@ -68,3 +89,13 @@ io.on('connection', function(socket) {
 setInterval(function() {
 	io.sockets.emit('state', players);
 }, 1000 / 60);
+
+
+function getRandomColor() {
+	var letters = '0123456789ABCDEF';
+	var color = '#';
+	for (var i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
