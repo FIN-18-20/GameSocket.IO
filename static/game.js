@@ -48,6 +48,23 @@ var canvas = document.getElementById('canvas');
 canvas.width = 800;
 canvas.height = 600;
 var context = canvas.getContext('2d');
+
+
+canvas.addEventListener('click', function(e) {
+
+  let p = {
+    x: e.clientX,
+    y: e.clientY
+  }
+
+  socket.emit('projectile', p);
+});
+
+const rmProj = document.querySelector('#rm-proj');
+rmProj.addEventListener('click', function(e) {
+  socket.emit('rm-all-proj');
+});
+
 socket.on('state', function(players) {
   //console.log(players);
   context.clearRect(0, 0, 800, 600);
@@ -57,6 +74,18 @@ socket.on('state', function(players) {
     context.fillStyle = player.color;
     context.beginPath();
     context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
+    context.fill();
+  }
+
+});
+
+
+socket.on('projectiles', function(projectiles) {
+  for (var p in projectiles) {
+    //console.log(projectiles[p]);
+    context.fillStyle = 'red';
+    context.beginPath();
+    context.arc(projectiles[p].x, projectiles[p].y, 5, 0, 2 * Math.PI);
     context.fill();
   }
 });

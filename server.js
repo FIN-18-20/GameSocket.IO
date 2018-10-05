@@ -35,6 +35,7 @@ var canvasBound = {
 };
 
 var players = {};
+var projectiles = [];
 io.on('connection', function(socket) {
 
 	socket.on('new player', function() {
@@ -74,6 +75,34 @@ io.on('connection', function(socket) {
 		}
 	});
 
+	socket.on('projectile', function(data) {
+		console.log(data);
+		projectiles.push({
+			x: data.x,
+			y: data.y,
+			pX: players[socket.id].x,
+			pY: players[socket.id].y,
+			angleY: Math.atan((data.y - players[socket.id].y ) / (data.x - players[socket.id].x))
+			
+		});
+
+		let currentP = projectiles[projectiles.length-1];
+		if (currentP.pX < currentP.x) {
+			currentP.dir = 'right';
+		} else {
+			currentP.dir = 'left';
+		}
+		console.log(projectiles[projectiles.length-1].angleY);
+
+		console.log(projectiles[projectiles.length-1].pX);
+		console.log(projectiles[projectiles.length-1].pY);
+
+	});
+
+	socket.on('rm-all-proj', function() {
+		projectiles = [];
+	});
+
 	socket.on('disconnect', function(data) {
 		console.log('Got disconnect!');
 		console.log(players);
@@ -82,12 +111,22 @@ io.on('connection', function(socket) {
 	});
 
 
-
-});
+}); // end io connection
 
 
 setInterval(function() {
 	io.sockets.emit('state', players);
+
+	for (var p in projectiles) {
+		if (projectiles[p].dir == 'right') {
+			projectiles[p].x += 1;
+			projectiles[p].y += 1 * projectiles[p].angleY;
+		} else {
+			projectiles[p].x -= 1;
+			projectiles[p].y -= 1 * projectiles[p].angleY;
+		}
+	}
+	io.sockets.emit('projectiles', projectiles);
 }, 1000 / 60);
 
 
