@@ -1,7 +1,7 @@
 {
-  "name": "Test socket",
+  "name": "Test-socket-game",
   "version": "1.0.0",
-  "description": "Test socket with a little gme",
+  "description": "Test socket with a little game",
   "main": "server.js",
   "scripts": {
     "test": "node server.js"
