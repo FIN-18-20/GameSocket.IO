@@ -51,7 +51,6 @@ var context = canvas.getContext('2d');
 
 
 canvas.addEventListener('click', function(e) {
-
   let p = {
     x: e.clientX,
     y: e.clientY
