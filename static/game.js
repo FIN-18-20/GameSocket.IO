@@ -1,11 +1,12 @@
-var socket = io();
+const socket = io();
 
-var movement = {
+let movement = {
   up: false,
   down: false,
   left: false,
   right: false
 }
+
 document.addEventListener('keydown', function(event) {
   switch (event.keyCode) {
     case 65: // A
@@ -22,6 +23,7 @@ document.addEventListener('keydown', function(event) {
     break;
   }
 });
+
 document.addEventListener('keyup', function(event) {
   switch (event.keyCode) {
     case 65: // A
@@ -44,10 +46,10 @@ setInterval(function() {
   socket.emit('movement', movement);
 }, 1000 / 60);
 
-var canvas = document.getElementById('canvas');
+const canvas = document.getElementById('canvas');
 canvas.width = 800;
 canvas.height = 600;
-var context = canvas.getContext('2d');
+const context = canvas.getContext('2d');
 
 
 canvas.addEventListener('click', function(e) {
@@ -68,8 +70,8 @@ socket.on('state', function(players) {
   //console.log(players);
   context.clearRect(0, 0, 800, 600);
   //context.fillStyle = 'green';
-  for (var id in players) {
-    var player = players[id];
+  for (let id in players) {
+    let player = players[id];
     context.fillStyle = player.color;
     context.beginPath();
     context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
@@ -78,13 +80,12 @@ socket.on('state', function(players) {
 
 });
 
-
 socket.on('projectiles', function(projectiles) {
-  for (var p in projectiles) {
+  for (let p in projectiles) {
     //console.log(projectiles[p]);
     context.fillStyle = 'red';
     context.beginPath();
-    context.arc(projectiles[p].x, projectiles[p].y, 5, 0, 2 * Math.PI);
+    context.arc(projectiles[p].pX, projectiles[p].pY, 5, 0, 2 * Math.PI);
     context.fill();
   }
 });

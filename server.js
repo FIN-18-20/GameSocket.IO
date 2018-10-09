@@ -1,12 +1,12 @@
 // Dependencies.
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const socketIO = require('socket.io');
 
-var app = express();
-var server = http.Server(app);
-var io = socketIO(server);
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
 
 //app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
@@ -27,15 +27,15 @@ server.listen(app.get('port'), function() {
 	console.log('Starting server on port 5000');
 });
 
-var canvasBound = {
+const canvasBound = {
 	min_x : 0,
 	max_x : 800,
 	min_y : 0,
-	max_y : 800
+	max_y : 600
 };
 
-var players = {};
-var projectiles = [];
+let players = {};
+let projectiles = [];
 io.on('connection', function(socket) {
 
 	socket.on('new player', function() {
@@ -47,7 +47,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('movement', function(data) {
-		var player = players[socket.id] || {};
+		let player = players[socket.id] || {};
 		if (data.left) {
 			player.x -= 5;
 		}
@@ -78,25 +78,11 @@ io.on('connection', function(socket) {
 	socket.on('projectile', function(data) {
 		console.log(data);
 		projectiles.push({
-			x: data.x,
-			y: data.y,
 			pX: players[socket.id].x,
 			pY: players[socket.id].y,
-			angleY: Math.atan((data.y - players[socket.id].y ) / (data.x - players[socket.id].x))
-			
+      deltaX: data.x - players[socket.id].x,
+      deltaY: data.y - players[socket.id].y
 		});
-
-		let currentP = projectiles[projectiles.length-1];
-		if (currentP.pX < currentP.x) {
-			currentP.dir = 'right';
-		} else {
-			currentP.dir = 'left';
-		}
-		console.log(projectiles[projectiles.length-1].angleY);
-
-		console.log(projectiles[projectiles.length-1].pX);
-		console.log(projectiles[projectiles.length-1].pY);
-
 	});
 
 	socket.on('rm-all-proj', function() {
@@ -117,23 +103,19 @@ io.on('connection', function(socket) {
 setInterval(function() {
 	io.sockets.emit('state', players);
 
-	for (var p in projectiles) {
-		if (projectiles[p].dir == 'right') {
-			projectiles[p].x += 1;
-			projectiles[p].y += 1 * projectiles[p].angleY;
-		} else {
-			projectiles[p].x -= 1;
-			projectiles[p].y -= 1 * projectiles[p].angleY;
-		}
+	for (let p in projectiles) {
+    let magnitude = Math.sqrt(projectiles[p].deltaX * projectiles[p].deltaX + projectiles[p].deltaY * projectiles[p].deltaY);
+    projectiles[p].pX += projectiles[p].deltaX * (4 / magnitude);
+    projectiles[p].pY += projectiles[p].deltaY * (4 / magnitude);
 	}
 	io.sockets.emit('projectiles', projectiles);
 }, 1000 / 60);
 
 
 function getRandomColor() {
-	var letters = '0123456789ABCDEF';
-	var color = '#';
-	for (var i = 0; i < 6; i++) {
+	let letters = '0123456789ABCDEF';
+	let color = '#';
+	for (let i = 0; i < 6; i++) {
 		color += letters[Math.floor(Math.random() * 16)];
 	}
 	return color;
